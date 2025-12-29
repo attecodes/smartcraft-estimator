@@ -58,6 +58,7 @@ From a technical perspective, this project showcases:
 
 ## 🗂 Planned Architecture
 
+```
 smartcraft-estimator/
 ├── frontend/ # React + TypeScript UI
 ├── backend/ # Actix Web API
@@ -66,6 +67,7 @@ smartcraft-estimator/
 │ └── workflows/
 │ └── ci.yml
 └── README.md
+```
 
 ## 🧪 Testing Strategy
 
