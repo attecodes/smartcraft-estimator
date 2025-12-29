@@ -47,3 +47,20 @@ mod tests {
         assert_eq!(estimate.total(), 840.0);
     }
 }
+#[test]
+fn applies_waste_factor_correctly() {
+    let material = Material {
+        name: "Deck Boards".to_string(),
+        cost_per_unit: 5.0,
+        pricing_unit: PricingUnit::LinearFoot,
+        waste_factor: 0.15,
+    };
+
+    let item = MaterialLineItem {
+        material,
+        base_quantity: 200.0,
+    };
+
+    assert_eq!(item.effective_quantity(), 230.0);
+    assert_eq!(item.cost(), 1150.0);
+}

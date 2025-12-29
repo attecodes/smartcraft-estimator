@@ -16,12 +16,16 @@ pub struct Material {
 }
 pub struct MaterialLineItem {
     pub material: Material,
-    pub quantity: f64,
+    pub base_quantity: f64,
 }
 
 impl MaterialLineItem {
+    pub fn effective_quantity(&self) -> f64 {
+        self.base_quantity * (1.0 + self.material.waste_factor)
+    }
+
     pub fn cost(&self) -> f64 {
-        self.quantity * self.material.cost_per_unit
+        self.effective_quantity() * self.material.cost_per_unit
     }
 }
 pub struct Labor {
