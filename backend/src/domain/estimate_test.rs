@@ -64,3 +64,44 @@ fn applies_waste_factor_correctly() {
     assert_eq!(item.effective_quantity(), 230.0);
     assert_eq!(item.cost(), 1150.0);
 }
+#[test]
+fn calculates_linear_material_quantity() {
+    let material = Material {
+        name: "Baseboard".to_string(),
+        cost_per_unit: 2.5,
+        pricing_unit: PricingUnit::LinearFoot,
+        waste_factor: 0.10,
+        units_per_measure: None,
+    };
+
+    let item = MaterialLineItem {
+        material,
+        measurement: Measurement {
+            linear_ft: Some(50.0),
+            square_ft: None,
+        },
+    };
+
+    assert_eq!(item.base_quantity(), 50.0);
+    assert_eq!(item.effective_quantity(), 55.0);
+}
+#[test]
+fn calculates_unit_based_material_quantity() {
+    let material = Material {
+        name: "Stud".to_string(),
+        cost_per_unit: 4.0,
+        pricing_unit: PricingUnit::Unit,
+        waste_factor: 0.10,
+        units_per_measure: Some(0.75),
+    };
+
+    let item = MaterialLineItem {
+        material,
+        measurement: Measurement {
+            linear_ft: Some(100.0),
+            square_ft: None,
+        },
+    };
+
+    assert_eq!(item.base_quantity(), 75.0);
+}

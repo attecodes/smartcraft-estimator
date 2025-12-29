@@ -13,15 +13,43 @@ pub struct Material {
     pub cost_per_unit: f64,
     pub pricing_unit: PricingUnit,
     pub waste_factor: f64, // e.g. 0.10 = 10%
+    pub units_per_measure: Option<f64>,
+
 }
 pub struct MaterialLineItem {
     pub material: Material,
-    pub base_quantity: f64,
+    pub measurement: Measurement,
+}
+
+impl Material {
+    pub fn base_quantity(&self, measurement: &Measurement) -> f64 {
+        match self.pricing_unit {
+            PricingUnit::LinearFoot => {
+                measurement.linear_ft.unwrap_or(0.0)
+            }
+            PricingUnit::SquareFoot => {
+                measurement.square_ft.unwrap_or(0.0)
+            }
+            PricingUnit::Unit => {
+                let units_per_measure = self.units_per_measure.unwrap_or(1.0);
+
+                let measure = measurement.square_ft
+                    .or(measurement.linear_ft)
+                    .unwrap_or(0.0);
+
+                measure * units_per_measure
+            }
+        }
+    }
 }
 
 impl MaterialLineItem {
+    pub fn base_quantity(&self) -> f64 {
+        self.material.base_quantity(&self.measurement)
+    }
+
     pub fn effective_quantity(&self) -> f64 {
-        self.base_quantity * (1.0 + self.material.waste_factor)
+        self.base_quantity() * (1.0 + self.material.waste_factor)
     }
 
     pub fn cost(&self) -> f64 {
